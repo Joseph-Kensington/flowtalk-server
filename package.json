@@ -1,0 +1,10 @@
+{
+  "name": "flowtalk-server",
+  "version": "1.0.0",
+  "scripts": { "start": "node index.js" },
+  "dependencies": {
+    "express": "^5.2.1",
+    "cors": "^2.8.6",
+    "better-sqlite3": "^12.10.0"
+  }
+}
