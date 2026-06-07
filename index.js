@@ -26,3 +26,24 @@ app.post('/api/seed', (req, res) => {
 });
 const PORT = process.env.PORT || 3001;
 app.listen(PORT);
+// AI chat proxy - keeps API key server-side
+app.post('/api/ai/chat', async (req, res) => {
+  const { message } = req.body;
+  if (!message) return res.json({ reply: '' });
+  try {
+    const r = await fetch('https://api.deepseek.com/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer sk-0ab46f2d12184af4ad8abac420488091' },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: [
+          { role: 'system', content: '你是小Q，FlowTalk平台的AI面谈官，专门服务腾讯离职员工。请用温暖、共情的语气回应。控制在80字以内。' },
+          { role: 'user', content: message }
+        ],
+        max_tokens: 100,
+      })
+    });
+    const data = await r.json();
+    res.json({ reply: data?.choices?.[0]?.message?.content || '' });
+  } catch { res.json({ reply: '' }); }
+});
